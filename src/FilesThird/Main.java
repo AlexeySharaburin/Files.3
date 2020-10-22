@@ -25,30 +25,32 @@ public class Main {
         File dirSavegames = new File("/Users/alexey/Desktop/Games/GameRunner/savegames");
         checkDir(dirSavegames, "/Users/alexey/Desktop/Games/GameRunner/savegames");
 
-        File save1 = new File("/Users/alexey/Desktop/Games/GameRunner/savegames", "save1.dat");
-        checkFile(save1, "save1.dat");
-        saveGame(game1, "/Users/alexey/Desktop/Games/GameRunner/savegames/save1.dat");
-        listStringsNames.add("/Users/alexey/Desktop/Games/GameRunner/savegames/save1.dat");
+        saveFile(game1,listStringsNames,"/Users/alexey/Desktop/Games/GameRunner/savegames", "/Users/alexey/Desktop/Games/GameRunner/savegames/save1.dat", "save1.dat");
 
-        File save2 = new File("/Users/alexey/Desktop/Games/GameRunner/savegames/", "save2.dat");
-        checkFile(save2, "save2.dat");
-        saveGame(game2, "/Users/alexey/Desktop/Games/GameRunner/savegames/save2.dat");
-        listStringsNames.add("/Users/alexey/Desktop/Games/GameRunner/savegames/save2.dat");
+        saveFile(game2,listStringsNames,"/Users/alexey/Desktop/Games/GameRunner/savegames", "/Users/alexey/Desktop/Games/GameRunner/savegames/save2.dat", "save2.dat");
 
-        File save3 = new File("/Users/alexey/Desktop/Games/GameRunner/savegames", "save3.dat");
-        checkFile(save3, "save3.dat");
-        saveGame(game3, "/Users/alexey/Desktop/Games/GameRunner/savegames/save3.dat");
-        listStringsNames.add("/Users/alexey/Desktop/Games/GameRunner/savegames/save3.dat");
+        saveFile(game3,listStringsNames,"/Users/alexey/Desktop/Games/GameRunner/savegames", "/Users/alexey/Desktop/Games/GameRunner/savegames/save3.dat", "save3.dat");
 
+//        File save1 = new File("/Users/alexey/Desktop/Games/GameRunner/savegames", "save1.dat");
+//        checkFile(save1, "save1.dat");
+//        saveGame(game1, "/Users/alexey/Desktop/Games/GameRunner/savegames/save1.dat");
+//        listStringsNames.add("/Users/alexey/Desktop/Games/GameRunner/savegames/save1.dat");
+//
+//        File save2 = new File("/Users/alexey/Desktop/Games/GameRunner/savegames/", "save2.dat");
+//        checkFile(save2, "save2.dat");
+//        saveGame(game2, "/Users/alexey/Desktop/Games/GameRunner/savegames/save2.dat");
+//        listStringsNames.add("/Users/alexey/Desktop/Games/GameRunner/savegames/save2.dat");
+//
+//        File save3 = new File("/Users/alexey/Desktop/Games/GameRunner/savegames", "save3.dat");
+//        checkFile(save3, "save3.dat");
+//        saveGame(game3, "/Users/alexey/Desktop/Games/GameRunner/savegames/save3.dat");
+//        listStringsNames.add("/Users/alexey/Desktop/Games/GameRunner/savegames/save3.dat");
 
-        zipFiles(listStringsNames, "/Users/alexey/Desktop/Games/GameRunner/savegames/zip.zip");
+//        zipFiles(listStringsNames, "/Users/alexey/Desktop/Games/GameRunner/savegames/zip.zip");
 
-        //        zipFiles1(dirSavegames, "/Users/alexey/Desktop/Games/GameRunner/savegames/zip.zip");
+                zipFiles1(dirSavegames, "/Users/alexey/Desktop/Games/GameRunner/savegames/zip.zip");
 
         cleanDir(dirSavegames);
-
-
-
 
         String pathZip = "/Users/alexey/Desktop/Games/GameRunner/savegames/zip.zip";
         String path = "/Users/alexey/Desktop/Games/GameRunner/savegames";
@@ -65,6 +67,13 @@ public class Main {
         openProgress(pathFile2);
         openProgress(pathFile3);
 
+    }
+
+    public static void saveFile(GameProgress game, List<String> list, String pathDir, String pathFile, String fileName) {
+        File file = new File(pathDir, fileName);
+        checkFile(file, fileName);
+        saveGame(game, pathFile);
+        list.add(pathFile);
     }
 
     public static void openZip(String pathZip, String path) {
@@ -136,17 +145,19 @@ public class Main {
         try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(pathZip))) {
             int i = 1;
             for (File file : dir.listFiles()) {
-                try (FileInputStream fis = new FileInputStream(file.getName())) {
-                    ZipEntry entry = new ZipEntry("/Users/alexey/Desktop/Games/GameRunner/savegames/package_save_" + i + ".dat");
-                    System.out.println(file.getName());
-                    zout.putNextEntry(entry);
-                    byte[] info = new byte[fis.available()];
-                    fis.read(info);
-                    zout.write(info);
-                    zout.closeEntry();
-                    i++;
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
+                if (!("zip.zip".equals(file.getName()))) {
+                    try (FileInputStream fis = new FileInputStream(file)) {
+                        ZipEntry entry = new ZipEntry("/Users/alexey/Desktop/Games/GameRunner/savegames/package_save_" + i + ".dat");
+                        System.out.println(file.getName());
+                        zout.putNextEntry(entry);
+                        byte[] info = new byte[fis.available()];
+                        fis.read(info);
+                        zout.write(info);
+                        zout.closeEntry();
+                        i++;
+                    } catch (Exception ex) {
+                        System.out.println(ex.getMessage());
+                    }
                 }
             }
 
